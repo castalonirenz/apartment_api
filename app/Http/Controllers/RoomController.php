@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Carbon;
 class RoomController extends Controller
 {
     /**
@@ -37,7 +39,7 @@ class RoomController extends Controller
         //
 
         $validator = Validator::make($request->all(), [
-            'room_number' => 'required',
+            'room_number' => 'required|unique:rooms',
             'room_details' => 'required',
             'rent_price' => 'required',
         ]);
@@ -48,7 +50,9 @@ class RoomController extends Controller
                     [
                         "room_number" => $request->input('room_number'),
                         "room_details" => $request->input('room_details'),
-                        "rent_price" => $request->input('rent_price')
+                        "rent_price" => $request->input('rent_price'),
+                        'created_at' => now(),
+                        'updated_at' => now()
                     ]
                     );
 
