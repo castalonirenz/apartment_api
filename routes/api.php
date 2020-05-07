@@ -16,8 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::post('user/create', ['uses' => 'UserController@create']);
-   Route::get('user/getAll', ['uses' => 'UserController@show'])->middleware('role');
-   Route::get('user/auth', ['uses' => 'Auth@Login']);
+    Route::get('user/getAll', ['uses' => 'UserController@show'])->middleware('role');
+    Route::get('user/auth', ['uses' => 'Auth@Login']);
+    Route::post('user/create_room', ['uses' => 'RoomController@store']);
     // Route::resource('user', 'UserController');
     // Route::post('users/{id}', function ($id) {
         
