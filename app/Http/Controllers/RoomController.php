@@ -34,7 +34,8 @@ class RoomController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+
+     public function store(Request $request)
     {
         //
 
@@ -42,19 +43,12 @@ class RoomController extends Controller
             'room_number' => 'required',
             'room_details' => 'required',
             'rent_price' => 'required',
-            'apartment_id' => 'required'
+            'apartment_id' => 'required|exists:apartment,id'
         ]);
 
         if($validator->passes()){
             
-            $check_apartment_id_exist = DB::table('apartment')
-                                    ->where("id", $request->input("apartment_id"))
-                                    ->get();
-
-
-            //check if apartment id
-            if(count($check_apartment_id_exist) > 0) {
-
+        
                 $check_room_exist = DB::table('rooms')
                                     ->where('apartment_number', $request->input("apartment_id"))
                                     ->where('room_number', $request->input("room_number"))
@@ -87,21 +81,13 @@ class RoomController extends Controller
                                 ], 422);
                             }
 
-
-            }
-            else{
-                return response()->json([
-                            'message' => "Apartment ID doesnt exist or deleted."
-                ], 404);
-            }
-
-
         }
         else{
             return response()->json($validator->errors(), 422);
         }
 
     }
+
 
     /**
      * Display the specified resource.
@@ -125,7 +111,7 @@ class RoomController extends Controller
                     return response()->json([
                         'message', "Successful",
                         'data', $room_list
-                    ]);
+                    ], 200);
                 
         }
         else{
