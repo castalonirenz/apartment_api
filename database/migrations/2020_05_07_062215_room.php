@@ -19,6 +19,7 @@ class Room extends Migration
             $table->integer('room_number');
             $table->string('room_details');
             $table->string('rent_price');
+            $table->integer('apartment_number');
             $table->timestamps();
         });
         

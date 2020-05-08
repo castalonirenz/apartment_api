@@ -22,6 +22,7 @@ class checkRole
         else{
             return response()
                     ->json([
+                        'message' => "For elavated user only"
                     ], 404);
         }
     }

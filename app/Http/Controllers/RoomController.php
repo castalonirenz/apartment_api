@@ -39,26 +39,63 @@ class RoomController extends Controller
         //
 
         $validator = Validator::make($request->all(), [
-            'room_number' => 'required|unique:rooms',
+            'room_number' => 'required',
             'room_details' => 'required',
             'rent_price' => 'required',
+            'apartment_id' => 'required'
         ]);
 
         if($validator->passes()){
-            DB::table('rooms')
-                ->insert(
-                    [
-                        "room_number" => $request->input('room_number'),
-                        "room_details" => $request->input('room_details'),
-                        "rent_price" => $request->input('rent_price'),
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]
-                    );
+            
+            $check_apartment_id_exist = DB::table('apartment')
+                                    ->where("id", $request->input("apartment_id"))
+                                    ->get();
 
-                    return response()->json([
-                            'message' => 'Successfully created new room'
-                    ], 200);
+
+            //check if apartment id
+            if(count($check_apartment_id_exist) > 0) {
+
+                $check_room_exist = DB::table('rooms')
+                                    ->where('apartment_number', $request->input("apartment_id"))
+                                    ->where('room_number', $request->input("room_number"))
+                                    ->get();
+
+                            
+                            //check if room exist in specific aparment id
+                            if(count($check_room_exist) < 1){
+                                    DB::table('rooms')
+                                    ->insert(
+                                        [
+                                            "room_number" => $request->input('room_number'),
+                                            "room_details" => $request->input('room_details'),
+                                            "rent_price" => $request->input('rent_price'),
+                                            'apartment_number' => $request->input('apartment_id'),
+                                            'created_at' => now(),
+                                            'updated_at' => now()
+                                        ]
+                                        );
+
+                                    return response()->json([
+                                            'message' => 'Successfully created new room'
+                                    ], 200);
+                            }
+                            
+                            else{
+                                return response()->json([
+                                    'message' => 'Room already exist'
+
+                                ], 422);
+                            }
+
+
+            }
+            else{
+                return response()->json([
+                            'message' => "Apartment ID doesnt exist or deleted."
+                ], 404);
+            }
+
+
         }
         else{
             return response()->json($validator->errors(), 422);
@@ -72,9 +109,28 @@ class RoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
         //
+
+        $validator = Validator::make($request->all(), [
+            'apartment_id' => 'required'
+        ]);
+
+        if($validator->passes()){
+            $room_list = DB::table('rooms')
+                        ->where('apartment_number', $request->input('apartment_id'))
+                        ->get();
+                    
+                    return response()->json([
+                        'message', "Successful",
+                        'data', $room_list
+                    ]);
+                
+        }
+        else{
+            return response()->json($validator->errors(), 422);
+        }
     }
 
     /**

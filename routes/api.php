@@ -15,13 +15,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => 'v1'], function () {
-    Route::post('user/create', ['uses' => 'UserController@create']);
-    Route::get('user/getAll', ['uses' => 'UserController@show'])->middleware('role');
-    Route::get('user/auth', ['uses' => 'Auth@Login']);
-    Route::post('user/create_room', ['uses' => 'RoomController@store']);
-    // Route::resource('user', 'UserController');
-    // Route::post('users/{id}', function ($id) {
-        
-    // });
+
+
+    Route::group(['prefix' => 'user'], function () {
+    Route::post('create', 'UserController@create');
+    Route::get('getAll', 'UserController@show')->middleware('role');
+    Route::get('auth', 'Auth@Login');
+
+    //room
+    Route::post('create_room', 'RoomController@store')->middleware('role');
+    Route::get('room_list', 'RoomController@show')->middleware('role');
+
+    //apartment
+    Route::post("create_apartment", 'ApartmentController@store')->middleware('role');
+    Route::get('apartment_list', 'ApartmentController@show')->middleware("role");
+    });
 });
 
