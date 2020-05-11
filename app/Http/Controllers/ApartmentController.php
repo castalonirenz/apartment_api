@@ -92,7 +92,7 @@ class ApartmentController extends Controller
                 ->get();
 
                 return response()->json([
-                    'message', "retrieved successful",
+                    'message', "retrieve successful",
                     'data', $aparmentList
                 ], 200);
         }
@@ -120,9 +120,47 @@ class ApartmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         //
+
+        $validator = Validator::make($request->all(), [
+            "role" => "required",
+            "apartment_id" => 'required|exists:apartment,id',
+            'apartment_name' => 'required',
+            'apartment_details' => 'required',
+            'apartment_type'=> 'required',
+            'storey' => 'required',
+            'location' => 'required',
+            'number_of_rooms' => 'required',
+            'owner' => 'required'
+        ]);
+
+        if($validator->passes()){
+
+            $data = DB::table('apartment')
+                    ->where('id', $request->input('apartment_id'))
+                    ->update([
+                        'apartment_name' => $request->input('apartment_name'),
+                        'apartment_details' => $request->input('apartment_details'),
+                        'apartment_type' => $request->input('apartment_type'),
+                        'storey' => $request->input('storey'),
+                        'location' => $request->input('location'),
+                        'number_of_rooms' => $request->input('number_of_rooms'),
+                        'owner' => $request->input('owner')
+                    ]);
+
+            return response()->json([
+                'message'=> "Update successful",
+                'data' => $request->all()
+            ]);
+        }
+        else{
+
+            return response()->json(
+                $validator->errors(), 422
+            );
+        }
     }
 
     /**

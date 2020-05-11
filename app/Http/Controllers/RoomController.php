@@ -99,8 +99,12 @@ class RoomController extends Controller
     {
         //
 
+        //custom error message
+   
+
         $validator = Validator::make($request->all(), [
-            'apartment_id' => 'required'
+            'apartment_id' => 'required|exists:apartment,id',
+
         ]);
 
         if($validator->passes()){

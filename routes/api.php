@@ -29,6 +29,7 @@ Route::group(['prefix' => 'v1'], function () {
     //apartment
     Route::post("create_apartment", 'ApartmentController@store')->middleware('role');
     Route::get('apartment_list', 'ApartmentController@show')->middleware("role");
+    Route::put('update/apartment_details', 'ApartmentController@update')->middleware('role');
     });
 });
 
