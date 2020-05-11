@@ -55,7 +55,7 @@ class ApartmentController extends Controller
                     'apartment_type' => $request->input('apartment_type'),
                     'apartment_name' => $request->input('apartment_name'),
                     'storey' => $request->input('storey'),
-                    'status' => $request->input('created'),
+                    'status' => 'created',
                     'apartment_details' => $request->input('apartment_details'),
                     'location' => $request->input('location'),
                     'number_of_rooms' => $request->input('number_of_rooms'),
@@ -170,8 +170,28 @@ class ApartmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         //
+
+        $validator = Validator::make($request->all(), [
+            'role' => 'required',
+            'apartment_id' => 'required|exists:apartment,id',
+        ]);
+
+        if($validator->passes()){
+            DB::table('apartment')
+            ->where('id', $request->input('apartment_id'))
+            ->delete();
+
+            return response()->json([
+                'message' => "deleted succesfully",
+            ]);
+
+
+        }
+        else{
+            return response()->json($validator->errors(), 422);
+        }
     }
 }
