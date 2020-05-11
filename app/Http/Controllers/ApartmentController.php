@@ -55,6 +55,7 @@ class ApartmentController extends Controller
                     'apartment_type' => $request->input('apartment_type'),
                     'apartment_name' => $request->input('apartment_name'),
                     'storey' => $request->input('storey'),
+                    'status' => $request->input('created'),
                     'apartment_details' => $request->input('apartment_details'),
                     'location' => $request->input('location'),
                     'number_of_rooms' => $request->input('number_of_rooms'),

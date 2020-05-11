@@ -20,6 +20,7 @@ class Apartment extends Migration
                 $table->string('apartment_details');
                 $table->string("apartment_type");
                 $table->string("storey");
+                $table->string('status')->nullable();
                 $table->string("location");
                 $table->integer('number_of_rooms');
                 $table->string("owner");
