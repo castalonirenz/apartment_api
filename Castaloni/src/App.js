@@ -23,6 +23,7 @@ import { getStorybookUI, configure } from '@storybook/react-native';
 // import stories
 configure(() => {
     require('./Views/Login/Login.stories')
+    require('./Component/Input/Input.stories')
     // require('./Component/Button/button.stories');
 }, module);
 
