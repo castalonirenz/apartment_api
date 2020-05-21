@@ -37,7 +37,12 @@ export const RegularTheme = StyleSheet.create({
         alignItems: "center"
     },
     Container: {
-        backgroundColor: "#fff"
+        backgroundColor: "#fff",
+    },
+    MenuIcon: {
+        height: 30,
+        width: 30,
+        tintColor: "#144d87"
     }
 })
 
@@ -77,5 +82,10 @@ export const DarkTheme = StyleSheet.create({
     },
     Container: {
         backgroundColor: "#213c5e"
+    },
+    MenuIcon: {
+        height: 30,
+        width: 30,
+        tintColor: "#fff"
     }
 })

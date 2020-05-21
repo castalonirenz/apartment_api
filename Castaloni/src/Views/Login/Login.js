@@ -34,6 +34,7 @@ export const Login = props => {
                 />
                 
                 <Button
+                    onPress={()=> props.navigation.navigate('Menu')}
                     style={{
                        width:"80%",
                        marginTop: 20

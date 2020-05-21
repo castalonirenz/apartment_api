@@ -6,6 +6,7 @@ export const Button = (props) => {
 
     return(
     <TouchableOpacity
+        onPress={props.onPress}
         style={[{
             padding: 10,
             backgroundColor:"#fe9700",
