@@ -8,7 +8,8 @@ export const Button = (props) => {
     <TouchableOpacity
         style={[{
             padding: 10,
-            backgroundColor:"#c5c5c5",
+            backgroundColor:"#fe9700",
+            alignItems:"center",
             borderRadius: 5}, props.style]}
     >
         
