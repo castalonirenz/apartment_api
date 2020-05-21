@@ -28,7 +28,11 @@ export const Apartment = props => {
             </TouchableOpacity>
 
 
-            <ApartmentList/>
+        
+                     <ApartmentList />
+
+                     <Text>TEST</Text>
+             
         </SafeAreaView>
     )
 }

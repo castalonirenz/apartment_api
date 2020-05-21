@@ -12,7 +12,7 @@ export const RegularTheme = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
-        backgroundColor: "blue",
+        backgroundColor: "#0b4f6c",
         width: Dimensions.get('screen').width * .8,
         height: Dimensions.get('screen').height * .3,
         alignItems: "center",
@@ -43,6 +43,16 @@ export const RegularTheme = StyleSheet.create({
         height: 30,
         width: 30,
         tintColor: "#144d87"
+    },
+    Shadow:{
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     }
 })
 
