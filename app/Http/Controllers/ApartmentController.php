@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 class ApartmentController extends Controller
 {
     /**
@@ -46,12 +47,13 @@ class ApartmentController extends Controller
             'storey' => 'required',
             'location' => 'required',
             'number_of_rooms' => 'required',
-            'owner' => 'required'
+            'owner' => 'required',
+            'image' => 'required|image'
         ]);
 
         if($validator->passes()){
-            DB::table('apartment')
-                ->insert([
+            $query = DB::table('apartment')
+                ->insertGetId([
                     'apartment_type' => $request->input('apartment_type'),
                     'apartment_name' => $request->input('apartment_name'),
                     'storey' => $request->input('storey'),
@@ -62,9 +64,34 @@ class ApartmentController extends Controller
                     'owner' => $request->input('owner')
                 ]);
 
+
+                 if($request->hasFile('image')){
+
+
+                                $fileNameExt = $request->file('image')->getClientOriginalName();
+                                $fileExt = $request->file('image')->getClientOriginalExtension();
+                                $fileSize = $request->file('image')->getSize();
+                                $fileNameToStore = time().'.'.$fileExt;
+
+                                   Storage::putFileAs('public/images', $request->file('image'), $fileNameToStore);
+                                $url = Storage::url($fileNameToStore);
+                                DB::table('apartment_image')
+                                    ->insert([
+                                        "domain" => "http://127.0.0.1:8000",
+                                        "filename" => $fileNameToStore,
+                                        'extension' => $fileNameExt,
+                                        "size" => $fileSize,
+                                        "ref_id" => $query,
+                                        "primary" => true
+                                    ]);
+
+                 }
+
+
                 return response()->json(
                     [
-                        "Message", "Successfully created new apartment"
+                        "Message" =>"Successfully created new apartment",
+                        "data" => $url
                     ]
                     );
         }
