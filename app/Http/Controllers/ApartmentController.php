@@ -115,9 +115,16 @@ class ApartmentController extends Controller
         ]);
 
         if($validator->passes()){
-          $aparmentList =  DB::table('apartment')
-                ->select()
-                ->get();
+        //   $aparmentList =  DB::table('apartment')
+        //         ->select()
+        //         ->get();
+
+        $aparmentList = DB::table('apartment')
+            ->leftJoin('apartment_image', 'apartment.id', '=', 'apartment_image.ref_id')
+            ->get();
+
+
+
 
                 return response()->json([
                     'message', "retrieve successful",
