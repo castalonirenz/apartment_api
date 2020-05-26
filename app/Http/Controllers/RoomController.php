@@ -64,6 +64,7 @@ class RoomController extends Controller
                                             "room_details" => $request->input('room_details'),
                                             "rent_price" => $request->input('rent_price'),
                                             'apartment_number' => $request->input('apartment_id'),
+                                            'available' => true,
                                             'created_at' => now(),
                                             'updated_at' => now()
                                         ]

@@ -1,47 +1,10 @@
 import React from 'react'
-import { View, Text, FlatList, Dimensions } from "react-native";
+import { View, Text, FlatList, Dimensions, Image } from "react-native";
 import { RegularTheme } from '../../Theme/Theme';
 
 export const ApartmentList = props => {
 
-    const array = [
-        {
-            id: 1,
-            apartment_name: "test",
-            apartment_details: "test details",
-            apartment_type: "test type",
-            storey: "2 floors",
-            status: 'created',
-            location: "taguig",
-            number_of_rooms: 4,
-            owner: "castaloni",
-            timestamps: null
-        },
-        {
-            id: 1,
-            apartment_name: "test",
-            apartment_details: "test details",
-            apartment_type: "test type",
-            storey: "2 floors",
-            status: 'created',
-            location: "taguig",
-            number_of_rooms: 4,
-            owner: "castaloni",
-            timestamps: null
-        },
-        {
-            id: 1,
-            apartment_name: "test",
-            apartment_details: "test details",
-            apartment_type: "test type",
-            storey: "2 floors",
-            status: 'created',
-            location: "taguig",
-            number_of_rooms: 4,
-            owner: "castaloni",
-            timestamps: null
-        }
-    ]
+
 
     const renderData = ({ item }) => {
 
@@ -55,6 +18,11 @@ export const ApartmentList = props => {
                     alignItems:"center",
                     justifyContent:"center"
                 }]}>
+
+                <Image
+                    resizeMode="contain"
+                    style={{width: "100%", height: "80%"}} 
+                    source={{uri: item.domain + item.filename}} />
 
                 <Text>{item.apartment_name}</Text>
                 <Text>{item.storey}</Text>
@@ -71,7 +39,7 @@ export const ApartmentList = props => {
                 showsHorizontalScrollIndicator={false}
                 horizontal={true}
                 style={{ width: "100%", padding: 10 }}
-                data={array}
+                data={props.data}
                 renderItem={renderData}
                 contentContainerStyle={{
                     // flexGrow: 1,

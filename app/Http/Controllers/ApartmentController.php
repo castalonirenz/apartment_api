@@ -52,32 +52,39 @@ class ApartmentController extends Controller
         ]);
 
         if($validator->passes()){
-            $query = DB::table('apartment')
-                ->insertGetId([
-                    'apartment_type' => $request->input('apartment_type'),
-                    'apartment_name' => $request->input('apartment_name'),
-                    'storey' => $request->input('storey'),
-                    'status' => 'created',
-                    'apartment_details' => $request->input('apartment_details'),
-                    'location' => $request->input('location'),
-                    'number_of_rooms' => $request->input('number_of_rooms'),
-                    'owner' => $request->input('owner')
-                ]);
+         
 
 
-                 if($request->hasFile('image')){
+                 if( $request->hasFile('image')){
 
+                                $file = $request->file('image');
 
                                 $fileNameExt = $request->file('image')->getClientOriginalName();
                                 $fileExt = $request->file('image')->getClientOriginalExtension();
                                 $fileSize = $request->file('image')->getSize();
                                 $fileNameToStore = time().'.'.$fileExt;
 
-                                   Storage::putFileAs('public/images', $request->file('image'), $fileNameToStore);
+                                // Storage::putFileAs('public/images', $request->file('image'), $fileNameToStore);
+                                $file->move(public_path() . '/images/', $fileNameToStore);
+
                                 $url = Storage::url($fileNameToStore);
+
+                                   $query = DB::table('apartment')
+                                    ->insertGetId([
+                                        'apartment_type' => $request->input('apartment_type'),
+                                        'apartment_name' => $request->input('apartment_name'),
+                                        'storey' => $request->input('storey'),
+                                        'status' => 'created',
+                                        'apartment_details' => $request->input('apartment_details'),
+                                        'location' => $request->input('location'),
+                                        'number_of_rooms' => $request->input('number_of_rooms'),
+                                        'owner' => $request->input('owner')
+                                    ]);
+
+
                                 DB::table('apartment_image')
                                     ->insert([
-                                        "domain" => "http://127.0.0.1:8000",
+                                        "domain" => "http://127.0.0.1:8000/images/",
                                         "filename" => $fileNameToStore,
                                         'extension' => $fileNameExt,
                                         "size" => $fileSize,
@@ -115,20 +122,21 @@ class ApartmentController extends Controller
         ]);
 
         if($validator->passes()){
-        //   $aparmentList =  DB::table('apartment')
-        //         ->select()
-        //         ->get();
+
 
         $aparmentList = DB::table('apartment')
-            ->leftJoin('apartment_image', 'apartment.id', '=', 'apartment_image.ref_id')
-            ->get();
-
-
-
+                     ->select()
+                     ->selectRaw("(SELECT COUNT(*) FROM rooms WHERE rooms.available = true AND rooms.apartment_number = apartment.id) as available_rooms ")
+                    //  ->selectRaw("(SELECT * FROM rooms WHERE rooms.apartment_number = apartment.id) as room_list")
+                    //  ->leftJoin($rooms)
+                     ->get();
+  
 
                 return response()->json([
-                    'message', "retrieve successful",
-                    'data', $aparmentList
+                    'message'=> "retrieve successful",
+                    // 'room_list' => $roomList,
+                    'apartment_list' => $aparmentList
+                    // 'slot' => $apartmentList->where('available', true)->count()
                 ], 200);
         }
         else{
