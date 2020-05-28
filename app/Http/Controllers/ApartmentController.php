@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 class ApartmentController extends Controller
 {
     /**
@@ -48,26 +49,11 @@ class ApartmentController extends Controller
             'location' => 'required',
             'number_of_rooms' => 'required',
             'owner' => 'required',
-            'image' => 'required|image'
+            'image.*' => 'required|image'
         ]);
 
         if($validator->passes()){
-         
-
-
                  if( $request->hasFile('image')){
-
-                                $file = $request->file('image');
-
-                                $fileNameExt = $request->file('image')->getClientOriginalName();
-                                $fileExt = $request->file('image')->getClientOriginalExtension();
-                                $fileSize = $request->file('image')->getSize();
-                                $fileNameToStore = time().'.'.$fileExt;
-
-                                // Storage::putFileAs('public/images', $request->file('image'), $fileNameToStore);
-                                $file->move(public_path() . '/images/', $fileNameToStore);
-
-                                $url = Storage::url($fileNameToStore);
 
                                    $query = DB::table('apartment')
                                     ->insertGetId([
@@ -81,6 +67,16 @@ class ApartmentController extends Controller
                                         'owner' => $request->input('owner')
                                     ]);
 
+                             foreach($request->file('image') as $image){
+                                $file = $image;
+
+                                $fileNameExt = $file->getClientOriginalName();
+                                $fileExt = $file->getClientOriginalExtension();
+                                $fileSize = $file->getSize();
+                                $fileNameToStore = Str::random().time().'.'.$fileExt;
+                                $file->move(public_path() . '/images/', $fileNameToStore);
+
+                                $url = Storage::url($fileNameToStore);
 
                                 DB::table('apartment_image')
                                     ->insert([
@@ -91,16 +87,18 @@ class ApartmentController extends Controller
                                         "ref_id" => $query,
                                         "primary" => true
                                     ]);
+                                    
+                             }
+
+                            return response()->json([
+                                    "Message" =>"Successfully created new apartment",
+                                    "data" => $url
+                                ]);
 
                  }
 
 
-                return response()->json(
-                    [
-                        "Message" =>"Successfully created new apartment",
-                        "data" => $url
-                    ]
-                    );
+                
         }
         else{
             return response()->json($validator->errors(), 422);
@@ -124,19 +122,37 @@ class ApartmentController extends Controller
         if($validator->passes()){
 
                 $apartments = DB::table('apartment')
+                    // ->join('apartment_image', 'apartment.id', "=", "apartment_image.ref_id")
                      ->get();
 
+                     //get all image associate with this apartment
+                     foreach($apartments as $a){
+                         $a->images = DB::table('apartment_image')
+                         ->where("apartment_image.ref_id", $a->id)
+                         ->get();
+                     }
 
+                     //get number of available room
                     foreach($apartments as $a) {
-                        $a->rooms = DB::table('rooms')
+                            $a->available = DB::table('rooms')
+                            ->where('available', true)
+                            ->where('apartment_number', $a->id)
+                            ->count();
+                }
+
+                    //get all room details
+                    foreach($apartments as $a) {
+                            $a->rooms = DB::table('rooms')
                             ->where('available', true)
                             ->where('apartment_number', $a->id)
                             ->get();
                 }
 
+             
+
                 return response()->json([
                     'message' => 'retrieve successful',
-                    'apartments' => $apartments
+                    'apartments' => $apartments,
                 ]);
         
 

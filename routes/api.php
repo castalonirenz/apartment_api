@@ -25,6 +25,7 @@ Route::group(['prefix' => 'v1'], function () {
     //room
     Route::post('create_room', 'RoomController@store')->middleware('role');
     Route::get('room_list', 'RoomController@show')->middleware('role');
+    Route::get('room_list_all', 'RoomController@showAll')->middleware('role');
 
     //apartment
     Route::post("create_apartment", 'ApartmentController@store')->middleware('role');

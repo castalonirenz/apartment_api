@@ -14,8 +14,8 @@ export const ApiRequest = (method, data) => {
             
         })
         .then(response => {
-
-            return response
+            // console.log(response, "--> whut")
+            return response.data
         })
         .catch(error => {
             console.log(error, "--> error")

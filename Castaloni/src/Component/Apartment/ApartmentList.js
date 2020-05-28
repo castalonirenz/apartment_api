@@ -1,43 +1,65 @@
 import React from 'react'
-import { View, Text, FlatList, Dimensions, Image } from "react-native";
+import { View, Text, FlatList, Dimensions, Image, TouchableOpacity, ImageBackground, ScrollView } from "react-native";
 import { RegularTheme } from '../../Theme/Theme';
-
+import LinearGradient from 'react-native-linear-gradient';
 export const ApartmentList = props => {
 
 
 
     const renderData = ({ item }) => {
-
         return (
-            <View
-                style={[RegularTheme.Shadow, {
-                    width: Dimensions.get('screen').width * .9,
-                    padding: 10, backgroundColor: "#f6f7e8",
-                    marginLeft: 15, borderRadius: 5, marginRight: 15,
-                    height: Dimensions.get('screen').height * .3,
-                    alignItems:"center",
-                    justifyContent:"center"
-                }]}>
 
-                <Image
-                    resizeMode="contain"
-                    style={{width: "100%", height: "80%"}} 
-                    source={{uri: item.domain + item.filename}} />
+             <View>
+                <ScrollView
+                    showsHorizontalScrollIndicator={false}
+                    nestedScrollEnabled={true}
+                    horizontal={true} >
+                    {item.images.map((image, index) => {
 
-                <Text>{item.apartment_name}</Text>
-                <Text>{item.storey}</Text>
-                <Text>{item.location}</Text>
+                        return (
+                            <TouchableOpacity
+                                style={{ marginLeft: index >= 1 ? 10 : 0 }} >
+                                <ImageBackground
+                                    // resizeMode="contain"
+                                    source={{ uri: image.domain + image.filename }}
+                                    style={[RegularTheme.Shadow, RegularTheme.ApartmentList]}>
 
-            </View>
+                                    <LinearGradient
+                                        colors={['transparent', '#000']}
+                                        style={[{
+                                            opacity: 0.7,
+                                            width: Dimensions.get('screen').width * .9,
+                                            height: Dimensions.get('screen').height * .3
+                                        }]} />
+
+                                    <View style={[{ position: "absolute", bottom: 20, left: 20, backgroundColor: "transparent" }]}>
+                                        <Image
+                                            resizeMode="contain"
+                                            style={{ width: 20, height: 20, tintColor: "#fff" }}
+                                            source={require('../../assets/images/home.png')} />
+                                        <Text style={{ color: "#fff", fontWeight: "bold" }}>{item.apartment_name}</Text>
+                                        <Text style={{ color: "#fff" }}>Rooms available: {item.available}</Text>
+                                    </View>
+
+                                </ImageBackground>
+                            </TouchableOpacity>
+                        )
+                    })}
+                </ScrollView>
+             
+             </View>
+
+
         )
     }
 
     return (
-        <View>
+        <View style={{flex: 1}}>
             <FlatList
-                //   pagingEnabled={true}
-                showsHorizontalScrollIndicator={false}
-                horizontal={true}
+                //   pagingEnabled={true
+                nestedScrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+                // horizontal={true}
                 style={{ width: "100%", padding: 10 }}
                 data={props.data}
                 renderItem={renderData}

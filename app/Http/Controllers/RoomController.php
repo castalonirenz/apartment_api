@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 class RoomController extends Controller
 {
     /**
@@ -40,26 +41,32 @@ class RoomController extends Controller
         //
 
         $validator = Validator::make($request->all(), [
-            'room_number' => 'required',
+            'room_number' => 'required|unique:rooms',
             'room_details' => 'required',
             'rent_price' => 'required',
-            'apartment_id' => 'required|exists:apartment,id'
+            'apartment_id' => 'required|exists:apartment,id',
+            'image' => 'required|image'
         ]);
 
         if($validator->passes()){
+
+            
             
         
-                $check_room_exist = DB::table('rooms')
-                                    ->where('apartment_number', $request->input("apartment_id"))
-                                    ->where('room_number', $request->input("room_number"))
-                                    ->get();
+              $file = $request->file('image');
+
+                                $fileNameExt = $request->file('image')->getClientOriginalName();
+                                $fileExt = $request->file('image')->getClientOriginalExtension();
+                                $fileSize = $request->file('image')->getSize();
+                                $fileNameToStore = time().'.'.$fileExt;
+
+                                $file->move(public_path() . '/images/', $fileNameToStore);
+
+                                $url = Storage::url($fileNameToStore);
 
                             
-                            //check if room exist in specific aparment id
-                            if(count($check_room_exist) < 1){
-                                    DB::table('rooms')
-                                    ->insert(
-                                        [
+                        $getID =  DB::table('rooms')
+                                    ->insertGetId([
                                             "room_number" => $request->input('room_number'),
                                             "room_details" => $request->input('room_details'),
                                             "rent_price" => $request->input('rent_price'),
@@ -67,20 +74,31 @@ class RoomController extends Controller
                                             'available' => true,
                                             'created_at' => now(),
                                             'updated_at' => now()
-                                        ]
-                                        );
+                                        ]);
+
+                        
+                                DB::table('rooms_images')
+                                    ->insert([
+                                        "domain" => "http://127.0.0.1:8000/images/",
+                                        "filename" => $fileNameToStore,
+                                        'extension' => $fileNameExt,
+                                        "size" => $fileSize,
+                                        "ref_id" => $getID,
+                                        "primary" => true
+                                    ]);
+
+                     
+                                 $rooms = DB::table('rooms')
+                                          ->get();
+                    
 
                                     return response()->json([
-                                            'message' => 'Successfully created new room'
+                                            'message' => 'Successfully created new room',
+                                            // 'rooms' => $rooms
                                     ], 200);
-                            }
                             
-                            else{
-                                return response()->json([
-                                    'message' => 'Room already exist'
-
-                                ], 422);
-                            }
+                            
+                        
 
         }
         else{
@@ -109,9 +127,13 @@ class RoomController extends Controller
         ]);
 
         if($validator->passes()){
+
             $room_list = DB::table('rooms')
                         ->where('apartment_number', $request->input('apartment_id'))
+                        ->join('rooms_images', 'rooms.id', "=", "rooms_images.ref_id")
                         ->get();
+
+             
                     
                     return response()->json([
                         'message', "Successful",
@@ -123,6 +145,39 @@ class RoomController extends Controller
             return response()->json($validator->errors(), 422);
         }
     }
+
+     public function showAll(Request $request)
+    {
+        //
+
+        //custom error message
+   
+
+        $validator = Validator::make($request->all(), [
+            // 'apartment_id' => 'required|exists:apartment,id',
+
+        ]);
+
+        if($validator->passes()){
+
+            $room_list = DB::table('rooms')
+                        ->join('rooms_images', 'rooms.id', "=", "rooms_images.ref_id")
+                        ->get();
+
+             
+                    
+                    return response()->json([
+                        'message', "Successful",
+                        'data', $room_list
+                    ], 200);
+                
+        }
+        else{
+            return response()->json($validator->errors(), 422);
+        }
+    }
+
+
 
     /**
      * Show the form for editing the specified resource.
