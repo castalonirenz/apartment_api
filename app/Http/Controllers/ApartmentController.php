@@ -48,7 +48,7 @@ class ApartmentController extends Controller
             'location' => 'required',
             'number_of_rooms' => 'required',
             'owner' => 'required',
-            'image' => 'required|image'
+            'image' => 'required'
         ]);
 
         if($validator->passes()){
@@ -57,17 +57,7 @@ class ApartmentController extends Controller
 
                  if( $request->hasFile('image')){
 
-                                $file = $request->file('image');
-
-                                $fileNameExt = $request->file('image')->getClientOriginalName();
-                                $fileExt = $request->file('image')->getClientOriginalExtension();
-                                $fileSize = $request->file('image')->getSize();
-                                $fileNameToStore = time().'.'.$fileExt;
-
-                                // Storage::putFileAs('public/images', $request->file('image'), $fileNameToStore);
-                                $file->move(public_path() . '/images/', $fileNameToStore);
-
-                                $url = Storage::url($fileNameToStore);
+                               
 
                                    $query = DB::table('apartment')
                                     ->insertGetId([
@@ -82,6 +72,17 @@ class ApartmentController extends Controller
                                     ]);
 
 
+                             foreach($request->file('image') as $image){
+                                $file = $image;
+
+                                $fileNameExt = $file->getClientOriginalName();
+                                $fileExt = $file->getClientOriginalExtension();
+                                $fileSize = $file->getSize();
+                                $fileNameToStore = time().'.'.$fileExt;
+                                $file->move(public_path() . '/images/', $fileNameToStore);
+
+                                $url = Storage::url($fileNameToStore);
+
                                 DB::table('apartment_image')
                                     ->insert([
                                         "domain" => "http://127.0.0.1:8000/images/",
@@ -91,16 +92,18 @@ class ApartmentController extends Controller
                                         "ref_id" => $query,
                                         "primary" => true
                                     ]);
+                                    
+                             }
+
+                            return response()->json([
+                                    "Message" =>"Successfully created new apartment",
+                                    "data" => $url
+                                ]);
 
                  }
 
 
-                return response()->json(
-                    [
-                        "Message" =>"Successfully created new apartment",
-                        "data" => $url
-                    ]
-                    );
+                
         }
         else{
             return response()->json($validator->errors(), 422);
@@ -127,18 +130,19 @@ class ApartmentController extends Controller
                     ->join('apartment_image', 'apartment.id', "=", "apartment_image.ref_id")
                      ->get();
 
+                     //get number of available room
                     foreach($apartments as $a) {
                             $a->available = DB::table('rooms')
                             ->where('available', true)
                             ->where('apartment_number', $a->id)
-                            // ->selectRaw("(SELECT COUNT(*) from rooms where rooms.available = true) as Available")
                             ->count();
                 }
+
+                    //get all room details
                     foreach($apartments as $a) {
                             $a->rooms = DB::table('rooms')
                             ->where('available', true)
                             ->where('apartment_number', $a->id)
-                            // ->selectRaw("(SELECT COUNT(*) from rooms where rooms.available = true) as Available")
                             ->get();
                 }
 
