@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 class ApartmentController extends Controller
 {
     /**
@@ -48,16 +49,11 @@ class ApartmentController extends Controller
             'location' => 'required',
             'number_of_rooms' => 'required',
             'owner' => 'required',
-            'image' => 'required'
+            'image.*' => 'required|image'
         ]);
 
         if($validator->passes()){
-         
-
-
                  if( $request->hasFile('image')){
-
-                               
 
                                    $query = DB::table('apartment')
                                     ->insertGetId([
@@ -71,14 +67,13 @@ class ApartmentController extends Controller
                                         'owner' => $request->input('owner')
                                     ]);
 
-
                              foreach($request->file('image') as $image){
                                 $file = $image;
 
                                 $fileNameExt = $file->getClientOriginalName();
                                 $fileExt = $file->getClientOriginalExtension();
                                 $fileSize = $file->getSize();
-                                $fileNameToStore = time().'.'.$fileExt;
+                                $fileNameToStore = Str::random().time().'.'.$fileExt;
                                 $file->move(public_path() . '/images/', $fileNameToStore);
 
                                 $url = Storage::url($fileNameToStore);
@@ -127,8 +122,15 @@ class ApartmentController extends Controller
         if($validator->passes()){
 
                 $apartments = DB::table('apartment')
-                    ->join('apartment_image', 'apartment.id', "=", "apartment_image.ref_id")
+                    // ->join('apartment_image', 'apartment.id', "=", "apartment_image.ref_id")
                      ->get();
+
+                     //get all image associate with this apartment
+                     foreach($apartments as $a){
+                         $a->images = DB::table('apartment_image')
+                         ->where("apartment_image.ref_id", $a->id)
+                         ->get();
+                     }
 
                      //get number of available room
                     foreach($apartments as $a) {
