@@ -124,19 +124,29 @@ class ApartmentController extends Controller
         if($validator->passes()){
 
                 $apartments = DB::table('apartment')
+                    ->join('apartment_image', 'apartment.id', "=", "apartment_image.ref_id")
                      ->get();
 
-
                     foreach($apartments as $a) {
-                        $a->rooms = DB::table('rooms')
+                            $a->available = DB::table('rooms')
                             ->where('available', true)
                             ->where('apartment_number', $a->id)
+                            // ->selectRaw("(SELECT COUNT(*) from rooms where rooms.available = true) as Available")
+                            ->count();
+                }
+                    foreach($apartments as $a) {
+                            $a->rooms = DB::table('rooms')
+                            ->where('available', true)
+                            ->where('apartment_number', $a->id)
+                            // ->selectRaw("(SELECT COUNT(*) from rooms where rooms.available = true) as Available")
                             ->get();
                 }
 
+             
+
                 return response()->json([
                     'message' => 'retrieve successful',
-                    'apartments' => $apartments
+                    'apartments' => $apartments,
                 ]);
         
 

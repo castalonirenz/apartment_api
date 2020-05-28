@@ -1,11 +1,22 @@
-import React from 'react;
-import { SafeAreaView, View, Text, TouchableOpacity, Image } from "react-native"
-
+import React from 'react';
+import { SafeAreaView, View, Text, TouchableOpacity, Image, useColorScheme } from "react-native"
+import { DarkTheme, RegularTheme } from "../../Theme/Theme";
 export const HeaderComponent = props => {
+    const colorScheme = useColorScheme()
+    return (
+        <TouchableOpacity
 
-    return(
-        <View >
+            onPress={props.onPress}
+            style={{
+                alignSelf: "flex-end",
+                padding: 20
+            }}>
 
-        </View>
+            <Image
+                resizeMode="contain"
+                style={colorScheme == "dark" ? DarkTheme.MenuIcon : RegularTheme.MenuIcon}
+                source={require('../../assets/images/bars.png')} />
+
+        </TouchableOpacity>
     )
 }

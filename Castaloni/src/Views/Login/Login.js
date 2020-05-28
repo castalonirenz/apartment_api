@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView, Text, TouchableOpacity, Image, View, Dimensions, TextInput, useColorScheme } from "react-native";
-import { NavigationContainer } from '@react-navigation/native'
 import { RegularTheme, DarkTheme } from '../../Theme/Theme';
-
-import { Input } from "../../Component/Input/Input";
-import { Button } from '../../Component/Button/Button';
+import { Input, Button } from "../../Component/index";
 export const Login = props => {
     const colorScheme = useColorScheme();
     return (

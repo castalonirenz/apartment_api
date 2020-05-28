@@ -53,6 +53,15 @@ export const RegularTheme = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
+    },
+    ApartmentList:{
+        width: Dimensions.get('screen').width * .9,
+        padding: 10, backgroundColor: "#0b4f6c",
+        marginBottom: 15, borderRadius: 5,
+        height: Dimensions.get('screen').height * .3,
+        alignItems: "center",
+        justifyContent: "center",
+        alignSelf: "center"
     }
 })
 
