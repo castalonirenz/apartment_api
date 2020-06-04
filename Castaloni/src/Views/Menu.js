@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView, Text, TouchableOpacity, BackHandler, useColorScheme, Image} from "react-native";
-import { DarkTheme, RegularTheme } from "../../Theme/Theme";
-import { HeaderComponent } from "../../Component/Header/Header";
+import { DarkTheme, RegularTheme } from "../Theme/Theme";
+import { HeaderComponent } from "../Component/index";
 export const Menu = props => {
     const colorScheme = useColorScheme()
 
@@ -21,7 +21,12 @@ export const Menu = props => {
                  <HeaderComponent
                     onPress={()=> props.navigation.toggleDrawer()}
                  />
-                 <Text>TEST</Text>
+            
+                 <Image
+                    style={{flex: 1, width:"100%"}}
+                    resizeMode="contain"
+                    source={require('../assets/images/looking_house.png')}
+                 />
             </SafeAreaView>
     )
 }

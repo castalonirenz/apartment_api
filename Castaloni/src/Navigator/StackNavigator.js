@@ -1,9 +1,9 @@
 import React from 'react'
-import { Login } from "../Views/Login/Login";
+import { Login } from "../Views/Login";
 import { DrawerNav } from "./DrawerNavigator";
 import { createStackNavigator } from '@react-navigation/stack';
-import { Menu } from "../Views/Menu/Menu";
-import { Apartment } from "../Views/Apartment/Apartment";
+import { Menu } from "../Views/Menu";
+import { Apartment } from "../Views/Apartment";
 const Stack = createStackNavigator();
 
 export const Auth = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, Image, useColorScheme } from "react-native"
-import { DarkTheme, RegularTheme } from "../../Theme/Theme";
+import { DarkTheme, RegularTheme } from "../Theme/Theme";
 export const HeaderComponent = props => {
     const colorScheme = useColorScheme()
     return (
@@ -15,7 +15,7 @@ export const HeaderComponent = props => {
             <Image
                 resizeMode="contain"
                 style={colorScheme == "dark" ? DarkTheme.MenuIcon : RegularTheme.MenuIcon}
-                source={require('../../assets/images/bars.png')} />
+                source={require('../assets/images/bars.png')} />
 
         </TouchableOpacity>
     )

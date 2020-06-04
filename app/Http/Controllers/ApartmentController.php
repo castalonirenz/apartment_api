@@ -49,7 +49,8 @@ class ApartmentController extends Controller
             'location' => 'required',
             'number_of_rooms' => 'required',
             'owner' => 'required',
-            'image.*' => 'required|image'
+            'image.*' => 'required|image',
+            'domain' => 'required'
         ]);
 
         if($validator->passes()){
@@ -80,7 +81,7 @@ class ApartmentController extends Controller
 
                                 DB::table('apartment_image')
                                     ->insert([
-                                        "domain" => "http://127.0.0.1:8000/images/",
+                                        "domain" => $request->input('domain'),
                                         "filename" => $fileNameToStore,
                                         'extension' => $fileNameExt,
                                         "size" => $fileSize,

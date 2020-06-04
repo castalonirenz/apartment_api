@@ -1,5 +1,6 @@
-export { ApartmentList } from "./Apartment/ApartmentList";
-export { Button } from "./Button/Button";
-export { HeaderComponent } from "./Header/Header";
-export { Input } from "./Input/Input";
-export {LoadingModal} from './Loading/Loading'
+export { ApartmentList } from "./ApartmentList";
+export { Button } from "./Button";
+export { HeaderComponent } from "./Header";
+export { Input } from "./Input";
+export {LoadingModal} from './Loading'
+export {EmptyComponent} from './Empty'

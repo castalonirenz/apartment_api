@@ -45,7 +45,8 @@ class RoomController extends Controller
             'room_details' => 'required',
             'rent_price' => 'required',
             'apartment_id' => 'required|exists:apartment,id',
-            'image' => 'required|image'
+            'image' => 'required|image',
+            'domain' => 'required'
         ]);
 
         if($validator->passes()){
@@ -79,7 +80,7 @@ class RoomController extends Controller
                         
                                 DB::table('rooms_images')
                                     ->insert([
-                                        "domain" => "http://127.0.0.1:8000/images/",
+                                        "domain" => $request->input('domain'),
                                         "filename" => $fileNameToStore,
                                         'extension' => $fileNameExt,
                                         "size" => $fileSize,
@@ -136,8 +137,8 @@ class RoomController extends Controller
              
                     
                     return response()->json([
-                        'message', "Successful",
-                        'data', $room_list
+                        'message' => "Successful",
+                        'data'=> $room_list
                     ], 200);
                 
         }
@@ -164,11 +165,17 @@ class RoomController extends Controller
                         ->join('rooms_images', 'rooms.id', "=", "rooms_images.ref_id")
                         ->get();
 
+                    foreach($room_list as $a){
+                         $a->apartment = DB::table('apartment')
+                         ->where("id", $a->apartment_number)
+                         ->get();
+                     }
+
              
                     
                     return response()->json([
-                        'message', "Successful",
-                        'data', $room_list
+                        'message'=> "Successful",
+                        'data'=> $room_list
                     ], 200);
                 
         }

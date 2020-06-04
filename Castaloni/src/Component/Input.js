@@ -1,6 +1,6 @@
 import React from 'react'
 import { TouchableOpacity, Text,View, Image, TextInput } from "react-native";
-import {RegularTheme} from '../../Theme/Theme'
+import {RegularTheme} from '../Theme/Theme'
 
 export const Input = props => {
     return(
